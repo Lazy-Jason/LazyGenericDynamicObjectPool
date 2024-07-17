@@ -1,0 +1,8 @@
+# To keep the template organised, all unreal engine specific lfs stuff is stored in this file.
+# This also means your unreal project must be in the same directory or subdirectory of this file.
+
+# From what I know, all .uasset files are serialized binary data from computer memory.
+# If a .uasset file is corrupt, you can't save it. Your only option is to revert to a
+# previous commit before the corruption - assuming you have a commit history on the corrupt file.
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap   filter=lfs diff=lfs merge=lfs -text
