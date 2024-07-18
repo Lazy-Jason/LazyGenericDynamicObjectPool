@@ -80,6 +80,8 @@ The plugin provides a settings class `ULazyDynamicObjectPoolSettings` where you 
 
 The plugin includes an editor window for managing and monitoring object pools. Access it via:
 
+![image](https://github.com/user-attachments/assets/7d01661e-3fdf-4a18-8a01-8166f70c6026)
+
 - Window > Lazy Generic Pool Window
 - The toolbar button with the plugin's icon
 
