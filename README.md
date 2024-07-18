@@ -41,6 +41,7 @@ PoolSubsystem->ReturnActorToPool(PooledActor);
 ### In Blueprints
 
 The plugin provides a custom node "Spawn Actor From Pool" that can be used in Blueprint graphs to spawn actors from the pool.
+![Pool Spawn Method](https://github.com/user-attachments/assets/894ddea2-202c-4d9a-8f74-3378adb04469)
 
 ### Implementing Poolable Actors
 
