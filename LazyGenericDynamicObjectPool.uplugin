@@ -1,0 +1,29 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "LazyGenericDynamicObjectPool",
+	"Description": "",
+	"Category": "LazyGenerics",
+	"CreatedBy": "Job Omondiale",
+	"CreatedByURL": "https://github.com/jasonG006",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "LazyGenericDynamicObjectPool",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "LazyGenericDynamicObjectPoolEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	],
+	"SupportURL": ""
+}
