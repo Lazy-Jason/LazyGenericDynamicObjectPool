@@ -97,7 +97,7 @@ For issues, feature requests, or contributions, please use the plugin's GitHub r
 
 ## License
 
-// Copyright (c) 2024, Job Omondiale
-// All rights reserved.
-// This plugin is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree.
+Copyright (C) 2024 Job Omondiale - All Rights Reserved.
+
+This plugin is licensed under the BSD-3-Clause license found in the
+LICENSE file in the root directory of this source tree.
