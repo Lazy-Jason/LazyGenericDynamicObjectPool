@@ -26,8 +26,6 @@ public class LazyGenericDynamicObjectPool : ModuleRules
 			new string[]
 			{
 				"Core",
-				"LazyGenericFunctionLibrary",
-				"Kismet",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -40,10 +38,7 @@ public class LazyGenericDynamicObjectPool : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"DeveloperSettings",
-				"UnrealEd",
-				"BlueprintGraph",
-				"KismetCompiler",
+				"DeveloperSettings", 
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

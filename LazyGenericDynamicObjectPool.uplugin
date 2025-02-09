@@ -3,16 +3,17 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "LazyGenericDynamicObjectPool",
-	"Description": "",
+	"Description": "A flexible and efficient object pooling system for Unreal Engine projects. This plugin provides a dynamic actor pooling solution that improves performance by reducing frequent spawning and destruction overhead. Features include automatic pool management, Blueprint support, customizable pool behaviors, and comprehensive statistics for performance monitoring. Suitable for various object pooling needs in both editor and runtime environments.",
 	"Category": "LazyGenerics",
 	"CreatedBy": "Job Omondiale",
-	"CreatedByURL": "https://github.com/jasonG006",
+	"CreatedByURL": "https://github.com/Lazy-Jason",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
 	"Installed": false,
+	"EngineVersion": "5.4.0",
 	"Modules": [
 		{
 			"Name": "LazyGenericDynamicObjectPool",
@@ -21,7 +22,7 @@
 		},
 		{
 			"Name": "LazyGenericDynamicObjectPoolEditor",
-			"Type": "Editor",
+			"Type": "UncookedOnly",
 			"LoadingPhase": "Default"
 		}
 	],

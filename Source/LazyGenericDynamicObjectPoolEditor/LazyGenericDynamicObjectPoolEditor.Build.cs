@@ -24,6 +24,7 @@ public class LazyGenericDynamicObjectPoolEditor : ModuleRules
             new string[]
             {
                 "Core",
+                "Kismet"
                 // ... add other public dependencies that you statically link with here ...
             }
         );
@@ -35,7 +36,6 @@ public class LazyGenericDynamicObjectPoolEditor : ModuleRules
                 "Projects",
                 "InputCore",
                 "EditorFramework",
-                "UnrealEd",
                 "ToolMenus",
                 "CoreUObject",
                 "Engine",
@@ -51,6 +51,9 @@ public class LazyGenericDynamicObjectPoolEditor : ModuleRules
                 "UncontrolledChangelists",
                 "EditorWidgets",
                 "ToolWidgets",
+                "UnrealEd",
+                "KismetCompiler",
+                "BlueprintGraph"
                 // ... add private dependencies that you statically link with here ...	
             }
         );

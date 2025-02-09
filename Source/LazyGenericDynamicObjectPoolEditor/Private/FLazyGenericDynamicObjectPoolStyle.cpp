@@ -53,5 +53,24 @@ TSharedRef<FSlateStyleSet> FLazyGenericDynamicObjectPoolStyle::Create()
 
 	Style->Set("LazyGenericPoolWindow.OpenPluginWindow", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon"), Icon20x20));
 
+	// Create a rounded border brush
+	const FSlateBrush* BorderBrush = new FSlateRoundedBoxBrush(FLinearColor::White, 4.0f);
+
+	// Create a button style using the rounded border brush
+	const FButtonStyle ButtonStyle = FButtonStyle()
+	.SetNormal(*BorderBrush)
+	.SetHovered(FSlateRoundedBoxBrush(FLinearColor::White, 4.0f))
+	.SetPressed(FSlateRoundedBoxBrush(FLinearColor::White, 4.0f))
+	.SetNormalPadding(FMargin(2.0f));
+
+	Style->Set("WhiteRoundedButton", ButtonStyle);
+
+	// Define the progress bar style
+	const FProgressBarStyle ProgressBarStyle = FProgressBarStyle()
+	.SetBackgroundImage(FSlateColorBrush(FLinearColor(FColor(0, 0, 0, 40))))
+	.SetFillImage(FSlateColorBrush(FLinearColor(1.0f, 0.5f, 0.0f)));
+
+	Style->Set("OrangeFillProgressBar", ProgressBarStyle);
+
 	return Style;
 }

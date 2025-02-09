@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class LAZYGENERICDYNAMICOBJECTPOOL_API UK2Node_SpawnActorFromPool : public UK2Node_ConstructObjectFromClass
+class LAZYGENERICDYNAMICOBJECTPOOLEDITOR_API UK2Node_SpawnActorFromPool : public UK2Node_ConstructObjectFromClass
 {
 	GENERATED_BODY()
 

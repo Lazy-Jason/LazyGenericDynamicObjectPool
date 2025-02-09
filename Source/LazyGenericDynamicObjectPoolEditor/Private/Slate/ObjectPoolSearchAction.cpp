@@ -2,11 +2,10 @@
 
 #include "Slate/ObjectPoolSearchAction.h"
 
+#include "Editor.h"
 #include "EditorClassUtils.h"
 #include "SlateOptMacros.h"
-#include "Commandlets/GatherTextCommandlet.h"
 #include "Engine/StaticMeshActor.h"
-#include "SceneOutliner/Public/SOutlinerTreeView.h"
 #include "Widgets/Input/SSearchBox.h"
 #include "Widgets/Views/SListView.h"
 #include "Widgets/Images/SImage.h"
@@ -22,60 +21,71 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 void SObjectPoolSearchAction::Construct(const FArguments& InArgs)
 {
+    const FLinearColor DarkBackgroundColor = FLinearColor(FColor(190, 190, 190));
+    const FLinearColor LightBackgroundColor = FLinearColor(FColor(200, 200, 200));
+    
     ChildSlot
     [
-        SNew(SVerticalBox)
-        + SVerticalBox::Slot()
-        .AutoHeight()
+        SNew(SBorder)
+        .Padding(10)
+        .HAlign(HAlign_Fill)
+        .VAlign(VAlign_Fill)
+        .BorderImage(FAppStyle::Get().GetBrush("Brushes.Panel"))
+        .BorderBackgroundColor(DarkBackgroundColor)
         [
-            SNew(SHorizontalBox)
-            + SHorizontalBox::Slot()
+            SNew(SVerticalBox)
+            + SVerticalBox::Slot()
+            .AutoHeight()
+            [
+                SNew(SHorizontalBox)
+                + SHorizontalBox::Slot()
+                .Padding(5)
+                [
+                    SNew(STextBlock)
+                    .Text(LOCTEXT("ActorPoolLabel", "Actor Pool"))
+                    .Font(FCoreStyle::GetDefaultFontStyle("Bold", 12))
+                ]
+                + SHorizontalBox::Slot()
+                .Padding(5)
+                [
+                    SNew(STextBlock)
+                    .Text(this, reinterpret_cast<TAttribute<FText>::FGetter::TConstMethodPtr<SObjectPoolSearchAction>>(&
+                              SObjectPoolSearchAction::GetActorTypeText))
+                ]
+            ]
+            + SVerticalBox::Slot()
+            .AutoHeight()
             .Padding(5)
             [
-                SNew(STextBlock)
-                .Text(LOCTEXT("ActorPoolLabel", "Actor Pool"))
-                .Font(FCoreStyle::GetDefaultFontStyle("Bold", 12))
+                SNew(SSearchBox)
+                .HintText(LOCTEXT("SearchBoxHint", "Search actors..."))
+                .OnTextChanged(this, &SObjectPoolSearchAction::OnSearchTextChanged)
             ]
-            + SHorizontalBox::Slot()
+            + SVerticalBox::Slot()
+            .FillHeight(1.f)
+            [
+                SNew(SBox)
+                .HAlign(HAlign_Fill)
+                .MaxDesiredHeight(300)
+                [
+                    SNew(SScrollBox)
+                    + SScrollBox::Slot()
+                    [
+                        SAssignNew(ActorListView, SListView<TSharedPtr<FPooledActor>>)
+                        .ItemHeight(25)
+                        .ListItemsSource(&FilteredActors)
+                        .OnGenerateRow(this, &SObjectPoolSearchAction::OnGenerateRowForList)
+                    ]
+                ]
+            ]
+            + SVerticalBox::Slot()
+            .AutoHeight()
             .Padding(5)
             [
                 SNew(STextBlock)
                 .Text(this, reinterpret_cast<TAttribute<FText>::FGetter::TConstMethodPtr<SObjectPoolSearchAction>>(&
-                          SObjectPoolSearchAction::GetActorTypeText))
+                          SObjectPoolSearchAction::GetFilterActorStatusText))
             ]
-        ]
-        + SVerticalBox::Slot()
-        .AutoHeight()
-        .Padding(5)
-        [
-            SNew(SSearchBox)
-            .HintText(LOCTEXT("SearchBoxHint", "Search actors..."))
-            .OnTextChanged(this, &SObjectPoolSearchAction::OnSearchTextChanged)
-        ]
-        + SVerticalBox::Slot()
-        .FillHeight(1.f)
-        [
-            SNew(SBox)
-            .HAlign(HAlign_Fill)
-            .MaxDesiredHeight(300)
-            [
-                SNew(SScrollBox)
-                + SScrollBox::Slot()
-                [
-                    SAssignNew(ActorListView, SListView<TSharedPtr<FPooledActor>>)
-                    .ItemHeight(25)
-                    .ListItemsSource(&FilteredActors)
-                    .OnGenerateRow(this, &SObjectPoolSearchAction::OnGenerateRowForList)
-                ]
-            ]
-        ]
-        + SVerticalBox::Slot()
-        .AutoHeight()
-        .Padding(5)
-        [
-            SNew(STextBlock)
-            .Text(this, reinterpret_cast<TAttribute<FText>::FGetter::TConstMethodPtr<SObjectPoolSearchAction>>(&
-                      SObjectPoolSearchAction::GetFilterActorStatusText))
         ]
     ];
 }

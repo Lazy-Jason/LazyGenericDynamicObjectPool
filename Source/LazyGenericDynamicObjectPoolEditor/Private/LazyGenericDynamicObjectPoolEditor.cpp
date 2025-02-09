@@ -1,20 +1,13 @@
 ﻿// Copyright (C) 2024 Job Omondiale - All Rights Reserved
 
 #include "LazyGenericDynamicObjectPoolEditor.h"
-
-#include "EditorStyleSet.h"
 #include "FLazyGenericDynamicObjectPoolStyle.h"
 #include "FLazyGenericDynamicObjectPoolCommands.h"
-#include "LevelEditor.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
 #include "ToolMenus.h"
-#include "Filters/SFilterSearchBox.h"
-#include "Slate/ObjectPoolSearchAction.h"
-#include "Slate/SObjectPoolQuickAction.h"
-#include "Subsystems/LazyDynamicObjectPoolSubsystem.h"
-#include "Widgets/Input/SSearchBox.h"
+#include "Slate/ObjectPoolDebugger.h"
 
 static const FName LazyGenericDynamicObjectPoolTabName("LazyGenericPoolWindow");
 
@@ -81,21 +74,7 @@ TSharedRef<SDockTab> FLazyGenericDynamicObjectPoolEditorModule::OnSpawnPluginTab
     return SNew(SDockTab)
         .TabRole(ETabRole::NomadTab)
         [
-            SNew(SVerticalBox)
-            
-            + SVerticalBox::Slot()
-            .AutoHeight()
-            .Padding(5)
-            [
-            	SNew(SObjectPoolQuickAction)
-            ]
-            
-            + SVerticalBox::Slot()
-            .AutoHeight()
-            .Padding(5)
-            [
-                SNew(SObjectPoolSearchAction)
-            ]
+        	SNew(SObjectPoolDebugger)
         ];
 }
 

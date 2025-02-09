@@ -5,14 +5,12 @@
 #include "BlueprintNodeSpawner.h"
 #include "EdGraphSchema_K2.h"
 #include "K2Node_CallFunction.h"
-#include "K2Node_DynamicCast.h"
-#include "K2Node_GetSubsystem.h"
 #include "KismetCompiler.h"
 #include "KismetCompilerMisc.h"
+#include "FunctionLibrary\LazyDynamicObjectPoolUnCookOnlyLibrary.h"
 #include "FunctionLibrary/LazyDynamicObjectPoolLibrary.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "Subsystems/LazyDynamicObjectPoolSubsystem.h"
-#include "Subsystems/SubsystemBlueprintLibrary.h"
 
 struct FK2Nod_SpawnActorFromPoolHelper
 {
@@ -146,7 +144,7 @@ void UK2Node_SpawnActorFromPool::ExpandNode(FKismetCompilerContext& CompilerCont
 
     // Get 'result' pin from 'begin spawn', this is the actual actor we want to set properties on
     /*UEdGraphPin* LastThen = FKismetCompilerUtilities::GenerateAssignmentNodes(CompilerContext, SourceGraph, GetActorFromPoolFunc, SpawnPoolNode, CallActorFromPoolResult, ClassToSpawn );*/
-    UEdGraphPin* LastThen = ULazyDynamicObjectPoolLibrary::GenerateAssignmentNodesForPoolActor(CompilerContext, SourceGraph, GetActorFromPoolFunc, SpawnPoolNode, CallActorFromPoolResult, ClassToSpawn);
+    UEdGraphPin* LastThen = ULazyDynamicObjectPoolUnCookOnlyLibrary::GenerateAssignmentNodesForPoolActor(CompilerContext, SourceGraph, GetActorFromPoolFunc, SpawnPoolNode, CallActorFromPoolResult, ClassToSpawn);
 
     // Make exec connection between 'then' on last node and 'finish'
     LastThen->MakeLinkTo(CallFinishActorFromPoolExec);

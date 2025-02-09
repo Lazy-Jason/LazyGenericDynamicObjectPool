@@ -1,11 +1,8 @@
 // Copyright (C) 2024 Job Omondiale - All Rights Reserved
 
 #include "Subsystems/LazyDynamicObjectPoolSubsystem.h"
-
-#include "LazyGenericFunctionLibraryBPLibrary.h"
 #include "DeveloperSettings/LazyDynamicObjectPoolSettings.h"
 #include "Interface/PoolableActorInterface.h"
-#include "UObject/PropertyAccessUtil.h"
 
 ULazyDynamicObjectPoolSubsystem::ULazyDynamicObjectPoolSubsystem()
 {}
@@ -137,10 +134,9 @@ void ULazyDynamicObjectPoolSubsystem::ActivateActor(AActor* Actor)
     Actor->SetActorTickEnabled(true);
 
     // Call a custom reset function if the actor implements it
-    const IPoolableActorInterface* PoolableActor = Cast<IPoolableActorInterface>(Actor);
-    if (PoolableActor)
+    if (Actor->Implements<UPoolableActorInterface>())
     {
-        PoolableActor->Execute_OnActivateFromPool(Actor);
+        IPoolableActorInterface::Execute_OnActivateFromPool(Actor);
         return;
     }
 
@@ -166,10 +162,9 @@ void ULazyDynamicObjectPoolSubsystem::DeactivateActor(AActor* Actor)
     Actor->SetActorTickEnabled(false);
 
     // Call a custom reset function if the actor implements it
-    const IPoolableActorInterface* PoolableActor = Cast<IPoolableActorInterface>(Actor);
-    if (PoolableActor)
+    if (Actor->Implements<UPoolableActorInterface>())
     {
-        PoolableActor->Execute_OnDeactivateToPool(Actor);
+        IPoolableActorInterface::Execute_OnDeactivateToPool(Actor);
         return;
     }
     
@@ -212,6 +207,7 @@ void ULazyDynamicObjectPoolSubsystem::GrowActorPool(FObjectPool& Pool, TSubclass
         NewActor->OnDestroyed.AddDynamic(this, &ULazyDynamicObjectPoolSubsystem::HandleActorDestroyed);
         DeactivateActor(NewActor);
         Pool.AvailableObjects.Add(NewActor);
+        Pool.TotalGrowthOperations ++;
     }
 
     LogPoolOperation(FString::Printf(TEXT("Grew actor pool for %s by %d actors"), *ActorClass->GetName(), MaxGrowth), ActorClass);
@@ -219,10 +215,12 @@ void ULazyDynamicObjectPoolSubsystem::GrowActorPool(FObjectPool& Pool, TSubclass
 
 void ULazyDynamicObjectPoolSubsystem::ShrinkPool(FObjectPool& Pool)
 {
+    // Calculate the total size and target size
     const int32 TotalSize = Pool.AvailableObjects.Num() + Pool.InUseObjects.Num();
     const int32 TargetSize = FMath::Max(Settings->DefaultInitialPoolSize, FMath::CeilToInt(TotalSize * (1.0f - Settings->ShrinkThreshold)));
 
-    const int32 NumToRemove = FMath::Max(0, Pool.AvailableObjects.Num() - TargetSize);
+    // Check if shrinking is necessary
+    const int32 NumToRemove = FMath::Max((Pool.AvailableObjects.Num() - TargetSize), 0);
     if (NumToRemove <= 0) return;
 
     const UWorld* World = GetWorld();
@@ -232,18 +230,29 @@ void ULazyDynamicObjectPoolSubsystem::ShrinkPool(FObjectPool& Pool)
         return;
     }
 
+    // Remove actors
+    int32 ActuallyRemoved = 0;
     for (int32 i = 0; i < NumToRemove; ++i)
     {
-        AActor* ActorToRemove = Pool.AvailableObjects.Pop();
-        if (IsValid(ActorToRemove))
+        if (Pool.AvailableObjects.Num() == 0) break;
+
+        AActor* ActorToRemove = Pool.AvailableObjects.Pop(false);
+        if (ensure(ActorToRemove))
         {
             ActorToRemove->Destroy();
+            ++ActuallyRemoved;
             OnActorDestroy.Broadcast();
         }
     }
+
+    // Shrink the array to avoid unnecessary memory usage
+    Pool.AvailableObjects.Shrink();
+
+    // Update stats
     TotalShrinkOperations++;
 
-    LogPoolOperation(FString::Printf(TEXT("Shrunk actor pool by %d actors"), NumToRemove), AActor::StaticClass());
+    // Log the operation
+    LogPoolOperation(FString::Printf(TEXT("Shrunk actor pool by %d actors (attempted %d)"), ActuallyRemoved, NumToRemove), AActor::StaticClass());
 }
 
 void ULazyDynamicObjectPoolSubsystem::PerformAutoShrink()
@@ -341,6 +350,12 @@ int32 ULazyDynamicObjectPoolSubsystem::GetPoolAccessCount(TSubclassOf<AActor> Cl
     return Pool ? Pool->AccessCount : 0;
 }
 
+int32 ULazyDynamicObjectPoolSubsystem::GetPoolGrowthOperation(TSubclassOf<AActor> ClassType) const
+{
+    const FObjectPool* Pool = ObjectPools.Find(ClassType);
+    return Pool ? Pool->TotalGrowthOperations : 0;
+}
+
 void ULazyDynamicObjectPoolSubsystem::ClearAllPools()
 {
     for (auto& Pair : ObjectPools)
@@ -363,6 +378,7 @@ void ULazyDynamicObjectPoolSubsystem::ClearAllPools()
         Pool.AvailableObjects.Empty();
         Pool.InUseObjects.Empty();
         Pool.AccessCount = 0;
+        Pool.TotalGrowthOperations = 0;
     }
     ObjectPools.Empty();
     LogPoolOperation(TEXT("Cleared all pools"), AActor::StaticClass());

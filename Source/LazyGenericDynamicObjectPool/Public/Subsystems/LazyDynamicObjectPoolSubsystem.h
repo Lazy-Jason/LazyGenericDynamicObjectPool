@@ -30,6 +30,7 @@ private:
         TArray<AActor*> AvailableObjects;
         TArray<AActor*> InUseObjects;
         int32 AccessCount = 0;
+        int32 TotalGrowthOperations = 0;
     };
 
     TMap<TSubclassOf<AActor>, FObjectPool> ObjectPools;
@@ -88,6 +89,9 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "Object Pool")
     int32 GetTotalShrinkOperations() const { return TotalShrinkOperations; }
+
+    UFUNCTION(BlueprintPure, Category = "Object Pool")
+    int32 GetPoolGrowthOperation(TSubclassOf<AActor> ClassType) const;
 
     UFUNCTION(BlueprintPure, Category = "Object Pool")
     int32 GetPoolAccessCount(TSubclassOf<AActor> ClassType) const;
