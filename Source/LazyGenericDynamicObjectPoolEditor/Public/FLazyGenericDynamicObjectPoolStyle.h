@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "Styling/SlateStyle.h"
 
-#pragma once
-
 /* */
 class FLazyGenericDynamicObjectPoolStyle
 {

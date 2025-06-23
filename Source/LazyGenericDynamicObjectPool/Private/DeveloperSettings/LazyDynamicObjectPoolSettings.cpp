@@ -5,5 +5,5 @@
 
 ULazyDynamicObjectPoolSettings::ULazyDynamicObjectPoolSettings(const FObjectInitializer& ObjectInitializer)
 {
-	CategoryName = TEXT("Plugins");
+	CategoryName = TEXT("Lazy Generics");
 }

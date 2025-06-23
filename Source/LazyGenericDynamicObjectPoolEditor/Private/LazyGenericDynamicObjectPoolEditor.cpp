@@ -24,10 +24,12 @@ void FLazyGenericDynamicObjectPoolEditorModule::StartupModule()
 	PluginCommands = MakeShareable(new FUICommandList);
 
 	// when the plugin button is clicked from the toolbar or the window view, perform editor clicked action
-	PluginCommands->MapAction(
+	PluginCommands->MapAction
+	(
 		FLazyGenericDynamicObjectPoolCommands::Get().OpenPluginWindow,
 		FExecuteAction::CreateRaw(this, &FLazyGenericDynamicObjectPoolEditorModule::PluginEditorButtonClicked),
-		FCanExecuteAction());
+		FCanExecuteAction()
+	);
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FLazyGenericDynamicObjectPoolEditorModule::RegisterMenus));
 	
